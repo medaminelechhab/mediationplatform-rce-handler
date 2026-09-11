@@ -1,0 +1,99 @@
+spring:
+  data:
+    mongodb:
+      host:
+      database:
+      username:
+      password:
+      authentication-database:
+  messages:
+    basename:
+  autoconfigure:
+    exclude:
+clinksplatform:
+  customerlinks:
+    connection:
+      base-url:
+      auth-url:
+      username:
+      password:
+      clientId:
+      clientSecret:
+      topic:
+      batch-topic:
+      replayform:
+      max-buffer-size:
+      max-network-delay:
+      grantType:
+      use-proxy:
+      use-proxy-for-auth:
+      use-ssl:
+    api:
+      version:
+      endpoint:
+    rce:
+      username:
+      password:
+      clientId:
+      clientSecret:
+      clinks-recipient:
+      ptf-recipient:
+      mail-sender:
+      mail-content-error-subject:
+      mail-content-error-body:
+      mail-technical-error-subject:
+      mail-technical-error-body:
+      batch:
+        daily-cron:
+        weekly-cron:
+      rce-backup-cron:
+      api:
+        version:
+        endpoint:
+      rce-segmentation-mapping:
+                                    'T':
+      rce-edg-codes:
+      rce-agence-list:
+
+  rice:
+    connection:
+      truststore-password:
+      certificate-alias:
+
+  interface:
+    connection:
+      auth-url:
+      base-url:
+      client_id:
+      client_secret:
+      grant-type:
+      truststore-password:
+      certificate-alias:
+      use-proxy:
+      use-proxy-for-auth:
+      use-ssl:
+  efiles:
+    connection:
+      auth-url:
+      base-url:
+      query-params:
+
+  tmp-storage-dir:
+
+  resiliency:
+    timeout-in-seconds:
+    retry-number:
+  security:
+    truststore-password:
+    certificate-alias:
+
+logging:
+  level:
+    reactor.netty.tcp.TcpClient:
+    ROOT:
+    org.mongodb.driver:
+    com.zaxxer.hikari.pool.HikariPool:
+    org.springframework.jdbc:
+
+backup:
+  collections:

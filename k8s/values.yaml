@@ -1,0 +1,5 @@
+# Values for Ingress object
+# ingressUrl :  --> defined in env.yaml (dev.yaml, uat.yaml, prod.yaml etc )
+# Values for Deployment object
+userId: 1001
+groupId: 2001

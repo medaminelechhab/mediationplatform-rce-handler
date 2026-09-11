@@ -1,0 +1,31 @@
+package com.MyProject.mediationplatformrcehandler.model.rce;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.opencsv.bean.CsvBindByPosition;
+import lombok.*;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+@Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class GroupCCIALComp {
+
+    @CsvBindByPosition(position = 0)
+    private String idGroup;
+    @CsvBindByPosition(position = 1)
+    private String sectorMacroCode;
+    @CsvBindByPosition(position = 2)
+    private String sectorMicroCode;
+    @CsvBindByPosition(position = 3)
+    private String sectorMicroCodeLoc;
+    @CsvBindByPosition(position = 4)
+    private String segmentationDCECode;
+    @CsvBindByPosition(position = 5)
+    private String segmentationDCECodeLoc;
+    @CsvBindByPosition(position = 6)
+    private String reserve;
+    @CsvBindByPosition(position = 7)
+    private String modificationDate;
+}

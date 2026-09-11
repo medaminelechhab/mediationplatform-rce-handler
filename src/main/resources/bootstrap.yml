@@ -1,0 +1,19 @@
+spring:
+  application:
+    name:
+  profiles:
+    active:
+  cloud:
+    config:
+      uri:
+  batch:
+    job:
+      enabled:
+  main:
+    allow-bean-definition-overriding:
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:

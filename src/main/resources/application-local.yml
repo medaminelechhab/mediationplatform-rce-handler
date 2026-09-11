@@ -1,0 +1,128 @@
+spring:
+  data:
+    mongodb:
+      host:
+      database:
+      username:
+      password:
+      authentication-database:
+  messages:
+    basename:
+  autoconfigure:
+    exclude:
+clinksplatform:
+  customerlinks:
+    connection:
+      base-url:
+      auth-url:
+      username:
+      password:
+      topic:
+      batch-topic:
+      replayform:
+      max-buffer-size:
+      max-network-delay:
+      grantType:
+      clientId:
+      clientSecret:
+      use-proxy:
+      use-proxy-for-auth:
+      use-ssl:
+    api:
+      version:
+      endpoint:
+
+    rce:
+      username:
+      password:
+      clientId:
+      clientSecret:
+      clinks-recipient:
+      ptf-recipient:
+      mail-sender:
+      mail-content-error-subject:
+      mail-content-error-body:
+      mail-technical-error-subject:
+      mail-technical-error-body:
+      batch:
+        daily-cron:
+        weekly-cron:
+      rce-backup-cron:
+      api:
+        version:
+        endpoint:
+      rce-segmentation-mapping:
+                              'T':
+      rce-edg-codes:
+      rce-agence-list:
+
+  rice:
+    connection:
+      truststore-password:
+      certificate-alias:
+
+  interface:
+    connection:
+      auth-url:
+      base-url:
+      client_id:
+      client_secret:
+      grant-type:
+      truststore-password:
+      certificate-alias:
+      use-proxy:
+      use-proxy-for-auth:
+      use-ssl:
+  efiles:
+    connection:
+      auth-url:
+      base-url:
+      query-params-bkp:
+      query-params:
+  tmp-storage-dir:
+
+  mongo:
+    certificate-alias:
+
+  embedded-mongo:
+    host:
+    database:
+    port:
+    use-proxy:
+
+  wsoi:
+    certificate-alias:
+
+  resiliency:
+    timeout-in-seconds:
+    retry-number:
+  security:
+    truststore-password:
+    certificate-alias:
+
+
+logging:
+  level:
+    com.MyProject.mediationplatform.common.network:
+    com.MyProject.mediationplatform.common.network.CacheProvider:
+    com.MyProject.mediationplatform.common.network.WebClientConfigurer:
+    org.mongodb.driver:
+    reactor.netty:
+    com.MyProject.mediationplatformrcehandler.service:
+
+mail.enable-sending:
+backup:
+  collections:
+  #, gpe_ccial_comp, gpe_ccial_constit, ent_eco_new, ent_me_comp, ent_me_org, ent_ref_xl2, ent_scoring_noteort, eta_ref_xl2, eta_me_org_new
+
+# For debug purposes
+debug:
+  pick-today-files:
+  keep-data:
+  keep-tmp-files:
+  skip-efiles:
+  ignore-db:
+
+rce-days-before-full:
+rce-days-before-full-in-EtaMeOrgNew:
+rce-days-before-full-in-EntMeOrgNew:

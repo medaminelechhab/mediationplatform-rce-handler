@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <property name="LOGS" value="files/logs/rce-handler"/>
+    <appender name="CONSOLE"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d [%thread] %-5level %-50logger{40} | MESSAGE = %replace(%msg){'\n'," "s} | EXCEPTION = %replace(%throwable){'\n',' '}%n</pattern>
+        </layout>
+    </appender>
+
+    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}</file>
+        <encoder>
+            <pattern>%d [%thread] %-5level %-50logger{40} | MESSAGE = %replace(%msg){'\n'," "s} | EXCEPTION = %replace(%throwable){'\n',' '}%n</pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>mediationplatform-rce-handler-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>1MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>10MB</totalSizeCap>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE">
+        </appender-ref>
+        <appender-ref ref="RollingFile" />
+    </root>
+    <logger name="org.apache.commons.beanutils" level="INFO"/>
+    <logger name="sun" level="WARN"/>
+    <!-- LOG "com.MyProject*" at DEBUG level -->
+    <logger name="com.MyProject" level="DEBUG"/>
+    <logger name="com.MyProject" level="INFO"/>
+</configuration>

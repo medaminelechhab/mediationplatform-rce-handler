@@ -1,0 +1,6 @@
+# Here we tell Hadolint to ignore some rules. NB: This is a sample application !!!!!
+ignored:
+  - DL3048   #./Dockerfile:3 DL3048 style: Invalid label key.
+  - DL3008   #./Dockerfile:12 DL3008 warning: Pin versions in apt get install. Instead of `apt-get install <package>` use `apt-get install <package>=<version>`
+  - DL3002   #./Dockerfile:17 DL3002 warning: Last USER should not be root
+  - DL3012   #./Dockerfile:3 DL3012 Multiple `HEALTHCHECK` instructions.

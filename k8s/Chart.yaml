@@ -1,0 +1,8 @@
+apiVersion: v1
+name: "mediationplatform-rce-handler"
+description: Mediation Platform RCE Handler
+type: application
+version: 1.6.1
+appVersion: "1.6.1"
+sources:
+ - https://gitlab.tech.MyProject/cl-platform/mediationplatform-rce-handler

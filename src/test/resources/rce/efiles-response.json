@@ -1,0 +1,18 @@
+[
+  {
+    "operationId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "streamId": 0,
+    "expirationDate": "2023-06-15T09:48:41.446Z",
+    "creationDate": "2023-06-15T09:48:41.446Z",
+    "fileName": "test",
+    "fileSize": 35,
+    "sender": "test",
+    "tags": [
+      "tag v1"
+    ],
+    "recipients": [
+      "owner"
+    ],
+    "criticality": "PUBLIC"
+  }
+]

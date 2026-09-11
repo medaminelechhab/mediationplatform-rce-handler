@@ -1,0 +1,12 @@
+---
+platform: prod
+ingressUrl: https://dashboard-caas-cnp.com.intraMyProject/#/replicationcontroller?namespace=customerlinksplatform-prod
+namespace: customerlinksplatform-prod
+env: prod
+image: "${DOCKER_RELEASE_IMAGE}"
+limits:
+  cpu: "3"
+  memory: 9G
+requests:
+  cpu: "1"
+  memory: 2G

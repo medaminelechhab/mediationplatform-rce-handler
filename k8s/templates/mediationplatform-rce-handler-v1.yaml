@@ -1,0 +1,393 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: service-{{ .Chart.Name }}-v1
+  labels:
+    {{- include "helm.labelsMediation" . | nindent 4 }}
+spec:
+  ports:
+    - port: 90
+      targetPort: 9022
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ .Chart.Name }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ .Chart.Name }}
+  labels:
+    {{- include "helm.labelsMediation" . | nindent 4 }}
+spec:
+  minReadySeconds: 30
+  progressDeadlineSeconds: 120
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      annotations:
+        co.elastic.logs/enabled: 'true'
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      securityContext:
+        runAsUser: {{ .Values.userId }}
+        runAsGroup: {{ .Values.groupId }}
+      volumes:
+        - name: mediationplatform-rce-storage
+          persistentVolumeClaim:
+            claimName: mediationplatform-rce-storage
+            readOnly: false
+        - name: "mediationplatform-common-storage"
+          persistentVolumeClaim:
+            claimName: "mediationplatform-common-storage"
+      imagePullSecrets:
+        - name: {{ .Chart.Name }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image }}
+          resources:
+            limits:
+              memory: {{ .Values.limits.memory }}
+              cpu: {{ .Values.limits.cpu }}
+            requests:
+              memory: {{ .Values.requests.memory }}
+              cpu: {{ .Values.requests.cpu }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: "/home/{{ .Chart.Name }}/files"
+              name: mediationplatform-rce-storage
+            - mountPath: "/home/{{ .Chart.Name }}/common"
+              name: "mediationplatform-common-storage"
+          env:
+            - name: EMBEDMONGO_USE_PROXY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: embedmongo-use-proxy
+            - name: MONGO_DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: mongo-db-host
+            - name: MONGO_DB_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: mongo-rce-db-database
+            - name: MONGO_DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: mongo-db-username
+            - name: MONGO_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: mongo-db-password
+            - name: MONGO_DB_AUTHENTICATION_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: mongo-db-authentication-database
+            - name: GENERATE_QD_HOURS_AGO
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: generate-qd-hours-ago
+            - name: COM_MyProject_LOGGING_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: com-MyProject-logging-level
+            - name: CONFIG_SERVER_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: config-server-host
+            - name: JAVA_OPTS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-java-opts
+            - name: CLINKS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: clinks-url
+            - name: CLINKS_AUTH_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: clinks-auth-url
+            - name: CLINKS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: clinks-username
+            - name: CLINKS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: clinks-password
+            - name: CLINKS_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: clinks-client-id
+            - name: CLINKS_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: clinks-client-secret
+            - name: CLINKS_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: clinks-endpoint
+            - name: CLINKS_USE_PROXY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: clinks-use-proxy
+            - name: CLINKS_USE_PROXY_FOR_AUTH
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: clinks-use-proxy-for-auth
+            - name: CLINKS_USE_SSL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: clinks-use-ssl
+            - name: TO_INTERFACE_AUTH_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: odi-auth-url
+            - name: TO_INTERFACE_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: odi-base-url
+
+            - name: TO_INTERFACE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: odi-client-id
+
+            - name: TO_INTERFACE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: odi-client-secret
+
+            - name: TO_INTERFACE_TRUSTSTORE_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: odi-truststore-password
+
+            - name: TO_INTERFACE_CERTIFICATE_ALIAS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: odi-certificate-alias
+
+            - name: TO_INTERFACE_USE_PROXY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: odi-use-proxy
+
+            - name: TO_INTERFACE_FOR_AUTH
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: odi-use-proxy-for-auth
+
+            - name: TO_INTERFACE_GRANT_TYPE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: odi-grant-type
+
+            - name: TO_INTERFACE_USE_SSL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: odi-use-ssl
+
+            - name: TO_EFILES_AUTH_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: efiles-auth-url
+
+            - name: TO_EFILES_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: efiles-base-url
+            - name: CLINKS_RECIPIENT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: clinks-recipient
+            - name: PTF_RECIPIENT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: ptf-recipient
+            - name: TRUSTSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: truststore-password
+            - name: CERTIFICATE_ALIAS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: certificate-alias
+            - name: RCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-username
+            - name: RCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-password
+            - name: RCE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-client-id
+            - name: RCE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-client-secret
+            - name: CLINKS_RECIPIENT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: clinks-recipient
+            - name: MAIL_SENDER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: mail-sender
+            - name: MAIL_CONTENT_ERROR_SUBJECT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-mail-content-error-subject
+            - name: MAIL_CONTENT_ERROR_BODY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-mail-content-error-body
+            - name: MAIL_TECHNICAL_ERROR_SUBJECT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-mail-technical-error-subject
+            - name: MAIL_TECHNICAL_ERROR_BODY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-mail-technical-error-body
+            - name: RCE_DAILY_BATCH
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-daily-cron
+            - name: RCE_WEEKLY_BATCH
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-weekly-cron
+            - name: RCE_BACKUP_CRON
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-backup-cron
+            - name: EFILES_QUERY_PARAMS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: efiles-query-params
+            - name: RCE_XMX
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-xmx
+            - name: RCE_XMS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-xms
+            - name: MAIL_ENABLE_SENDING
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-mail-enable-sending
+            - name: RCE_SEGMENTATION_MAPPING
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-segmentation-mapping
+            - name: RCE_AGENCE_LIST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-agence-list
+            - name: RCE_EDG_CODES
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-edg-codes
+            - name: RCE_BACKUP_COLLECTIONS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-backup-collections
+            - name: RCE_PICK_TODAY_FILES
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-pick-today-files
+            - name: RCE_DAYS_BEFORE_FULL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-days-before-full
+            - name: RCE_DAYS_BEFORE_FULL_ETAMEORG
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-days-before-full-in-etaMeOrg
+            - name: RCE_DAYS_BEFORE_FULL_ENTMEORG
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-days-before-full-in-entMeOrg
+            - name: RCE_DAYS_BEFORE_FULL_SCORING
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.namespace }}
+                  key: rce-days-before-full-in-scoring
+            - name: SPRING_PROFILES_ACTIVE
+              value: "kubernetes-v3,db,account,rce,clinks,tx,db"
